@@ -18,10 +18,32 @@ The toolkit is built on one principle: **context stays in the digital ecosystem*
 | **Licence Register** | `/licence-register`, "what's expiring" | Version-controlled inventory of every licence, plugin, domain, cert and contract in `register/licences.yaml`; flags expiring and already-expired items before they become outages. |
 | **KB Capture** | `/kb-capture`, "write that down" | Turns fixes, decisions and system quirks into searchable runbooks and decision records in `kb/` — and retrieves them when the same problem returns. |
 
+## Zeus Field Kit (`index.html`)
+
+A single-page remote ICT management hub — the clickable companion to the
+skills above, built mobile-first for working while travelling. Open
+`index.html` in any browser: it is fully self-contained (no build step, no
+server, no dependencies beyond Google Fonts) and works offline apart from
+the fonts.
+
+On the page: one-tap links into every admin console (Salesforce, Asana,
+M365/Entra/Exchange/Defender/Intune, Cloudflare, WP Engine, WordPress,
+Stripe, NetSuite, Zapier), runbooks for the common jobs with the traps
+marked (case close-reason validation, onboarding, offboarding, MFA resets,
+phishing triage, website incidents), and escalation contacts. A search box
+live-filters everything.
+
+This public copy is the generic edition. The full edition — with internal
+reference IDs and the operational watchlist — lives privately.
+
+Everything lives in plain markup — when a value on the page disagrees with
+the live console, trust the console and fix the page.
+
 ## Repository layout
 
 ```
 .claude/skills/     the nine tools (one folder per skill)
+index.html          Zeus Field Kit — the remote ops hub page
 reports/            weekly reports and recon runs (accumulates history)
 incidents/          incident timelines and post-incident reviews
 kb/                 runbooks, decision records, per-system notes

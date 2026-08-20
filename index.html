@@ -1,0 +1,427 @@
+<title>Zeus Field Kit</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,700&family=Archivo:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+  :root {
+    --ground: #F5F7F4;
+    --surface: #FFFFFF;
+    --surface-2: #ECF1EB;
+    --ink: #16211B;
+    --ink-2: #4A5A50;
+    --line: #D8E0D8;
+    --accent: #2E7D5B;
+    --accent-ink: #FFFFFF;
+    --warn: #9A7208;
+    --warn-bg: #FBF3DA;
+    --crit: #B5432E;
+    --crit-bg: #F9E7E2;
+    --ok-bg: #E2F0E8;
+    --mono-bg: #EDF2ED;
+    --shadow: 0 1px 3px rgba(22,33,27,.08);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --ground: #111814;
+      --surface: #18211C;
+      --surface-2: #1F2A23;
+      --ink: #E4EBE6;
+      --ink-2: #93A399;
+      --line: #2C3830;
+      --accent: #52A87E;
+      --accent-ink: #0E1511;
+      --warn: #D9A514;
+      --warn-bg: #2C2510;
+      --crit: #E07A63;
+      --crit-bg: #34201B;
+      --ok-bg: #1B2F25;
+      --mono-bg: #212C25;
+      --shadow: 0 1px 3px rgba(0,0,0,.4);
+    }
+  }
+  :root[data-theme="dark"] {
+    --ground: #111814;
+    --surface: #18211C;
+    --surface-2: #1F2A23;
+    --ink: #E4EBE6;
+    --ink-2: #93A399;
+    --line: #2C3830;
+    --accent: #52A87E;
+    --accent-ink: #0E1511;
+    --warn: #D9A514;
+    --warn-bg: #2C2510;
+    --crit: #E07A63;
+    --crit-bg: #34201B;
+    --ok-bg: #1B2F25;
+    --mono-bg: #212C25;
+    --shadow: 0 1px 3px rgba(0,0,0,.4);
+  }
+
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--ground);
+    color: var(--ink);
+    font-family: "Archivo", system-ui, sans-serif;
+    font-size: 15.5px;
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+  }
+  .wrap { max-width: 880px; margin: 0 auto; padding: 0 16px 80px; }
+
+  header.hero { padding: 40px 0 20px; }
+  .kicker {
+    font-size: 12px; letter-spacing: .12em; text-transform: uppercase;
+    color: var(--accent); font-weight: 600; margin: 0 0 6px;
+  }
+  h1 {
+    font-family: "Bricolage Grotesque", "Archivo", sans-serif;
+    font-size: clamp(30px, 6vw, 42px); font-weight: 700;
+    margin: 0 0 8px; line-height: 1.08; text-wrap: balance;
+  }
+  .lede { color: var(--ink-2); margin: 0; max-width: 56ch; }
+
+  .searchbar {
+    position: sticky; top: 0; z-index: 5;
+    background: var(--ground);
+    padding: 12px 0; margin-top: 14px;
+  }
+  .searchbar input {
+    width: 100%; padding: 11px 14px;
+    font: inherit; color: var(--ink);
+    background: var(--surface); border: 1.5px solid var(--line);
+    border-radius: 10px; outline: none;
+  }
+  .searchbar input:focus { border-color: var(--accent); }
+
+  h2 {
+    font-family: "Bricolage Grotesque", "Archivo", sans-serif;
+    font-size: 21px; font-weight: 600; margin: 36px 0 4px;
+  }
+  .sec-note { color: var(--ink-2); font-size: 14px; margin: 0 0 14px; }
+
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 10px; }
+  a.card {
+    display: block; text-decoration: none; color: var(--ink);
+    background: var(--surface); border: 1px solid var(--line);
+    border-radius: 10px; padding: 12px 14px; box-shadow: var(--shadow);
+  }
+  a.card:hover, a.card:focus-visible { border-color: var(--accent); outline: none; }
+  .card .name { font-weight: 600; display: flex; align-items: center; gap: 8px; }
+  .card .name::after { content: "↗"; color: var(--accent); font-size: 13px; margin-left: auto; }
+  .card .what { color: var(--ink-2); font-size: 13.5px; margin-top: 2px; }
+  .tag {
+    display: inline-block; font-size: 11px; font-weight: 600; letter-spacing: .05em;
+    text-transform: uppercase; padding: 1px 7px; border-radius: 99px;
+    background: var(--ok-bg); color: var(--accent); margin-top: 8px;
+  }
+  .tag.prep { background: var(--warn-bg); color: var(--warn); }
+
+  details.runbook {
+    background: var(--surface); border: 1px solid var(--line);
+    border-radius: 10px; margin-bottom: 8px; box-shadow: var(--shadow);
+  }
+  details.runbook summary {
+    cursor: pointer; padding: 13px 16px; font-weight: 600;
+    display: flex; align-items: center; gap: 10px; list-style: none;
+  }
+  details.runbook summary::-webkit-details-marker { display: none; }
+  details.runbook summary::before {
+    content: "+"; color: var(--accent); font-weight: 700; width: 14px; flex-shrink: 0;
+  }
+  details[open].runbook summary::before { content: "–"; }
+  .rb-body { padding: 0 16px 16px 40px; }
+  .rb-body p { margin: 8px 0; }
+  .rb-body ol, .rb-body ul { margin: 8px 0; padding-left: 20px; }
+  .rb-body li { margin: 4px 0; }
+  .rb-body li::marker { color: var(--accent); font-weight: 600; }
+
+  code, .mono {
+    font-family: "IBM Plex Mono", ui-monospace, monospace;
+    font-size: .88em; background: var(--mono-bg);
+    padding: 1px 5px; border-radius: 5px;
+  }
+  pre {
+    font-family: "IBM Plex Mono", ui-monospace, monospace; font-size: 13px;
+    background: var(--mono-bg); border-radius: 8px; padding: 10px 12px;
+    overflow-x: auto; margin: 8px 0;
+  }
+  pre code { background: none; padding: 0; }
+
+  .callout {
+    border-left: 3px solid var(--warn); background: var(--warn-bg);
+    padding: 8px 12px; border-radius: 0 8px 8px 0; margin: 10px 0; font-size: 14px;
+  }
+  .callout.crit { border-left-color: var(--crit); background: var(--crit-bg); }
+
+  .tablewrap { overflow-x: auto; background: var(--surface); border: 1px solid var(--line); border-radius: 10px; margin-bottom: 12px; }
+  table { border-collapse: collapse; width: 100%; font-size: 14px; }
+  th, td { text-align: left; padding: 9px 14px; border-bottom: 1px solid var(--line); vertical-align: top; }
+  tr:last-child td { border-bottom: none; }
+  th { font-size: 12px; text-transform: uppercase; letter-spacing: .07em; color: var(--ink-2); font-weight: 600; }
+  td .mono { white-space: nowrap; }
+  td { font-variant-numeric: tabular-nums; }
+
+  .risk {
+    display: flex; gap: 10px; align-items: baseline;
+    background: var(--surface); border: 1px solid var(--line);
+    border-radius: 10px; padding: 11px 14px; margin-bottom: 8px;
+  }
+  .sev {
+    flex-shrink: 0; font-size: 11px; font-weight: 700; letter-spacing: .06em;
+    text-transform: uppercase; padding: 1px 8px; border-radius: 99px;
+  }
+  .sev.crit { background: var(--crit-bg); color: var(--crit); }
+  .sev.warn { background: var(--warn-bg); color: var(--warn); }
+  .risk .why { color: var(--ink-2); font-size: 13.5px; }
+
+  .hidden { display: none !important; }
+  .noresults { color: var(--ink-2); font-style: italic; display: none; margin: 20px 0; }
+
+  footer { margin-top: 44px; color: var(--ink-2); font-size: 13.5px; border-top: 1px solid var(--line); padding-top: 16px; }
+  a { color: var(--accent); }
+  @media (prefers-reduced-motion: no-preference) {
+    a.card { transition: border-color .12s ease; }
+  }
+</style>
+
+<div class="wrap">
+  <header class="hero">
+    <p class="kicker">BirdLife Australia · ICT</p>
+    <h1>Zeus Field Kit</h1>
+    <p class="lede">Everything you need to run BirdLife ICT from the road — consoles, runbooks, the IDs you always have to look up, and the risks worth watching while you're away.</p>
+  </header>
+
+  <div class="searchbar">
+    <input id="q" type="search" placeholder="Filter everything — try “close reason”, “offboard”, “gid”, “MFA”…" aria-label="Filter the page">
+  </div>
+  <p class="noresults" id="noresults">Nothing matches that filter.</p>
+
+  <section data-sec>
+    <h2>Consoles</h2>
+    <p class="sec-note">One tap into each system. <span class="tag">Claude can write</span> means a claude.ai/code session can execute changes there for you; <span class="tag prep">prepare only</span> means Claude drafts the fix and a human runs it. Connectors last verified live 20 Aug 2026 — all healthy except Atlassian (timing out).</p>
+    <div class="grid">
+      <a class="card" data-item href="https://birdlifeaustralia.lightning.force.com" target="_blank" rel="noopener">
+        <span class="name">Salesforce — zeus queue</span>
+        <span class="what">Ask Zeus cases, Contacts, Opportunities. The hub everything syncs into.</span>
+        <span class="tag">Claude can write</span>
+      </a>
+      <a class="card" data-item href="https://app.asana.com" target="_blank" rel="noopener">
+        <span class="name">Asana — IT Operations</span>
+        <span class="what">Project board for dev and project work. Sections from Backlog to Done.</span>
+        <span class="tag">Claude can write</span>
+      </a>
+      <a class="card" data-item href="https://admin.microsoft.com" target="_blank" rel="noopener">
+        <span class="name">Microsoft 365 admin</span>
+        <span class="what">Users, licences, mailboxes. Tenant: birdlife.org.au.</span>
+        <span class="tag prep">Prepare only</span>
+      </a>
+      <a class="card" data-item href="https://entra.microsoft.com" target="_blank" rel="noopener">
+        <span class="name">Entra ID</span>
+        <span class="what">Identity, Conditional Access, sign-in logs, MFA methods.</span>
+        <span class="tag prep">Prepare only</span>
+      </a>
+      <a class="card" data-item href="https://intune.microsoft.com" target="_blank" rel="noopener">
+        <span class="name">Intune</span>
+        <span class="what">Device management and compliance.</span>
+        <span class="tag prep">Prepare only</span>
+      </a>
+      <a class="card" data-item href="https://admin.exchange.microsoft.com" target="_blank" rel="noopener">
+        <span class="name">Exchange admin</span>
+        <span class="what">Shared mailboxes, distribution lists, mail flow.</span>
+        <span class="tag prep">Prepare only</span>
+      </a>
+      <a class="card" data-item href="https://security.microsoft.com" target="_blank" rel="noopener">
+        <span class="name">Defender</span>
+        <span class="what">Phishing triage, quarantine, threat explorer.</span>
+        <span class="tag prep">Prepare only</span>
+      </a>
+      <a class="card" data-item href="https://dash.cloudflare.com" target="_blank" rel="noopener">
+        <span class="name">Cloudflare</span>
+        <span class="what">DNS, CDN, WAF for birdlife.org.au.</span>
+        <span class="tag prep">Dashboard for DNS/WAF</span>
+      </a>
+      <a class="card" data-item href="https://my.wpengine.com" target="_blank" rel="noopener">
+        <span class="name">WP Engine</span>
+        <span class="what">Hosting for production (birdlifeaus) and staging. Backups, PHP logs, cache.</span>
+        <span class="tag prep">Prepare only</span>
+      </a>
+      <a class="card" data-item href="https://birdlife.org.au/wp-admin" target="_blank" rel="noopener">
+        <span class="name">WordPress admin</span>
+        <span class="what">Production WP + WooCommerce.</span>
+        <span class="tag prep">Prepare only</span>
+      </a>
+      <a class="card" data-item href="https://birdlifestage.wpengine.com/wp-admin" target="_blank" rel="noopener">
+        <span class="name">WordPress staging</span>
+        <span class="what">birdlifestage — config differs from production; check before promoting.</span>
+        <span class="tag prep">Test here first</span>
+      </a>
+      <a class="card" data-item href="https://dashboard.stripe.com" target="_blank" rel="noopener">
+        <span class="name">Stripe</span>
+        <span class="what">Payment accounts — charges, refunds, payouts.</span>
+        <span class="tag">Claude can read</span>
+      </a>
+      <a class="card" data-item href="https://system.netsuite.com" target="_blank" rel="noopener">
+        <span class="name">NetSuite</span>
+        <span class="what">Finance/ERP. Saved searches, SuiteQL, bank recs.</span>
+        <span class="tag">Claude can read</span>
+      </a>
+      <a class="card" data-item href="https://zapier.com/app/dashboard" target="_blank" rel="noopener">
+        <span class="name">Zapier</span>
+        <span class="what">Bridges to Raisely, Ortto, Campaign Monitor, Humanitix, LearnUpon.</span>
+        <span class="tag">Claude can run actions</span>
+      </a>
+      <a class="card" data-item href="https://claude.ai/code" target="_blank" rel="noopener">
+        <span class="name">Claude Code</span>
+        <span class="what">Start a session with your connectors to actually execute any of this remotely.</span>
+        <span class="tag">Your remote hands</span>
+      </a>
+    </div>
+  </section>
+
+  <section data-sec>
+    <h2>Runbooks</h2>
+    <p class="sec-note">The jobs that will actually come up while you're travelling, with the traps marked.</p>
+
+    <details class="runbook" data-item>
+      <summary>Close a Salesforce Case — the two-field trap</summary>
+      <div class="rb-body">
+        <p>A validation rule blocks closing without a reason. Set <strong>both fields together</strong> or the write fails:</p>
+        <pre><code>Status = "Closed"
+Case_Closed_Reason__c = "Closed - Resolved"   (or another valid reason)</code></pre>
+        <p>Valid close reasons: <code>Closed - Resolved</code> · <code>Closed - Resolved First Call</code> · <code>Closed - Email Sent</code> · <code>Closed - Email Edited &amp; Sent</code> · <code>Closed - Phone Call</code> · <code>Closed - No Action Required</code> · <code>Closed - Internal Follow up</code> · <code>Closed - Duplicate</code> · <code>Closed - Spam</code> · <code>Closed - Abandoned</code> · <code>Closed - Autoreply</code> · <code>Closed - Returned Letter</code></p>
+        <p>While you're in there: ~48% of cases have a blank sub-type (<code>SC_Additional_Enquiry_Type__c</code>). Filling it on close quietly improves every future report.</p>
+      </div>
+    </details>
+
+    <details class="runbook" data-item>
+      <summary>Triage the zeus queue</summary>
+      <div class="rb-body">
+        <ol>
+          <li>Scope: cases with record type <code>Zeus</code> and <code>IsClosed = false</code>.</li>
+          <li>Read the case <em>and its comments/emails</em> before acting — a "quick close" often has a reply waiting.</li>
+          <li>Classify: resolved → close (see runbook above) · waiting on requester → <code>Waiting Response-External</code> (system flips it to <code>Response Received</code> when they reply) · in-flight → <code>In Progress</code> · someone else's → reassign.</li>
+          <li>Real dev work? Create/link an Asana task in IT Operations and close the case pointing to it — track work where it happens.</li>
+        </ol>
+        <p>Statuses: <code>New</code> · <code>In Progress</code> · <code>Pending</code> · <code>On Hold-Internal</code> · <code>Waiting Response-External</code> · <code>Response Received</code> · <code>Closed</code></p>
+        <div class="callout">Reassigning? Query the User by name and confirm the right record — don't trust a remembered ID.</div>
+      </div>
+    </details>
+
+    <details class="runbook" data-item>
+      <summary>Onboard a new starter</summary>
+      <div class="rb-body">
+        <ol>
+          <li>Create the Entra user (check the Employment Hero starter record if the feed exists).</li>
+          <li>Assign licence — new starters get <strong>M365 Business Premium</strong>.</li>
+          <li>Add to the right groups and distribution lists; set manager.</li>
+          <li>Confirm MFA registration on day one.</li>
+          <li>Note any SaaS outside SSO (Asana, Canva, Salesforce) that needs a separate invite.</li>
+          <li>Update the originating case: status + internal note.</li>
+        </ol>
+        <p>These are Entra admin actions — no admin connector is live, so run them yourself in the console or hand the checklist to Andrew/Keith.</p>
+      </div>
+    </details>
+
+    <details class="runbook" data-item>
+      <summary>Offboard a leaver — security-critical, do it on the last day</summary>
+      <div class="rb-body">
+        <ol>
+          <li>Block sign-in / disable the Entra account.</li>
+          <li>Revoke all sessions (Entra → user → revoke sessions).</li>
+          <li>Convert mailbox to shared; grant manager access if requested and approved.</li>
+          <li>Reclaim the licence.</li>
+          <li>Remove from groups and DLs.</li>
+          <li>Sweep SaaS outside SSO: Salesforce, Asana, Canva, WP admin, Stripe, NetSuite, Zapier.</li>
+          <li>Update the case and log what was done.</li>
+        </ol>
+      </div>
+    </details>
+
+    <details class="runbook" data-item>
+      <summary>MFA or password reset request</summary>
+      <div class="rb-body">
+        <ol>
+          <li><strong>Verify identity first</strong> — call back on a known number or confirm via manager. A reset request is the classic account-takeover move.</li>
+          <li>Check Entra sign-in logs for risky sign-ins on the account before resetting.</li>
+          <li>Reset MFA methods and require re-registration in Entra → user → authentication methods.</li>
+          <li>Graph session if scripting: <code>Connect-MgGraph -Scopes "User.ReadWrite.All","UserAuthenticationMethod.ReadWrite.All"</code></li>
+          <li>Log it on the case.</li>
+        </ol>
+      </div>
+    </details>
+
+    <details class="runbook" data-item>
+      <summary>Phishing report triage</summary>
+      <div class="rb-body">
+        <ol>
+          <li>Get the original as an attachment (headers matter), not a forward of the body.</li>
+          <li>Check Defender (security.microsoft.com) → Explorer for other recipients of the same message.</li>
+          <li>If anyone clicked/entered credentials: treat as the MFA-reset runbook for that user, plus revoke sessions.</li>
+          <li>Quarantine/delete campaign messages from Explorer.</li>
+          <li>Reply to the reporter (thank them — it keeps reports coming), close the case <code>Closed - Resolved</code>.</li>
+        </ol>
+      </div>
+    </details>
+
+    <details class="runbook" data-item>
+      <summary>Website incident (birdlife.org.au)</summary>
+      <div class="rb-body">
+        <ol>
+          <li>Confirm scope: site down vs slow vs checkout broken. Check from your phone off-VPN.</li>
+          <li>WP Engine portal → environment <code>birdlifeaus</code> → check PHP error logs, restore points.</li>
+          <li>Cloudflare dashboard → check for a traffic spike (cart-flood pattern has happened before); "Under Attack" mode is the big red lever.</li>
+          <li>Checkout/payment issues: check a recent WooCommerce order carries its payment and Salesforce sync references — any missing on an order more than a few minutes old = broken sync.</li>
+          <li>Never promote staging naively — staging config differs from production in ways that break payments.</li>
+        </ol>
+      </div>
+    </details>
+
+    <details class="runbook" data-item>
+      <summary>Move Asana work along</summary>
+      <div class="rb-body">
+        <p>IT Operations Project Plan sections: Backlog/Requests → Scoping/Requirements → In Development/Progress → Awaiting Response / Blocked → Ready for Deployment → Hypercare → Done.</p>
+        <p>When a case and a task are the same work, cross-link them: case number in the task, task URL in the case.</p>
+      </div>
+    </details>
+  </section>
+
+  <section data-sec>
+    <h2>People &amp; escalation</h2>
+    <div class="tablewrap" data-item>
+      <table>
+        <tr><th>Who</th><th>Call them for</th></tr>
+        <tr><td>Andrew Dunn</td><td>Day-to-day zeus queue cover, M365 admin actions</td></tr>
+        <tr><td>Keith Tsui</td><td>Salesforce/dev work, Asana board items</td></tr>
+        <tr><td>Nina Lewis</td><td>Helpdesk triage and requester follow-ups</td></tr>
+        <tr><td>WP Engine support</td><td>Hosting incidents — 24/7 chat in the portal</td></tr>
+        <tr><td>Blitzm</td><td>WooCommerce membership build questions</td></tr>
+      </table>
+    </div>
+    <p class="sec-note" style="margin-top:10px">Doing rather than dispatching? Open <a href="https://claude.ai/code" target="_blank" rel="noopener">claude.ai/code</a> from your phone or laptop — your connectors are live there. Claude can read and <strong>write Salesforce cases and Asana tasks directly</strong>, and will prepare exact Entra/Exchange steps for whoever's in the office.</p>
+  </section>
+
+  <footer>
+    Zeus Field Kit · BirdLife Australia ICT · Built from the operational knowledge base, August 2026. Reference values change — trust the console over this page when they disagree.
+  </footer>
+</div>
+
+<script>
+  const q = document.getElementById('q');
+  const items = Array.from(document.querySelectorAll('[data-item]'));
+  const secs = Array.from(document.querySelectorAll('[data-sec]'));
+  const none = document.getElementById('noresults');
+  q.addEventListener('input', () => {
+    const t = q.value.trim().toLowerCase();
+    let any = false;
+    items.forEach(el => {
+      const hit = !t || el.textContent.toLowerCase().includes(t);
+      el.classList.toggle('hidden', !hit);
+      if (hit) any = true;
+      if (hit && t && el.tagName === 'DETAILS') el.open = true;
+    });
+    secs.forEach(sec => {
+      const visible = sec.querySelector('[data-item]:not(.hidden)');
+      sec.classList.toggle('hidden', !visible);
+    });
+    none.style.display = any ? 'none' : 'block';
+  });
+</script>
